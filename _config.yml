@@ -1,9 +1,9 @@
 # Site settings | 网站设置
-title: github-fxf
-SEOTitle: github-fxf的博客 | github-fxf
+title: fanxiaofeng
+SEOTitle: fxf的博客 | github-fxf
 header-img: img/home-bg-o.jpg
 email: 245958539@qq.com
-description: "github-fxf的博客"
+description: "fanxiaofeng的博客"
 keyword: "github-fxf, github-fxf的博客, rainbom sea, github-fxf, Python blog"
 url: "http://github-fxf.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
