@@ -1,5 +1,5 @@
 # Site settings | 网站设置
-title: fanxiaofeng
+title: github-fxf
 SEOTitle: fxf的博客 | github-fxf
 header-img: img/home-bg-o.jpg
 email: 245958539@qq.com
@@ -12,7 +12,7 @@ github_repo: "https://github.com/github-fxf/github-fxf.github.io.git" #code repo
 
 # Sidebar settings | 侧边栏设置
 sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "就算这样,也要笑着去努力啊!"
+sidebar-about-description: "一失足成大瘸子,再回首又闪了腰!"
 sidebar-avatar: /img/head.jpg      # 头像
 
 
