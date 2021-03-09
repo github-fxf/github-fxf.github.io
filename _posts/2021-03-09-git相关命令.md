@@ -1,0 +1,27 @@
+
+
+# git常用命令总结
+
+## 
+
+- git remote -v :查看远程仓库
+- git remote add <shortName> <url>: 新建远程仓库
+- git clone <url>:从远程仓库克隆
+- git remote rm <shortName> :移除无效的远程仓库
+- git fetch : 从远程仓库抓取数据，不会merge
+- git merge origin/master：合并到工作区
+- git merge <fenzhiming>:合并分支
+- git pull: 从远程仓库获取最新数据并merge到工作区
+- git add : 将工作区文件添加到暂存区
+- git commit : 将暂存区的文件提交到本地仓库
+- git push <cangkuName> <fenzhiName> :将本地代码推送到远程仓库
+- git branch:列出本地分支
+- git branch -r：列出远程仓库分支
+- git branch -a：列出本地和远程所有分支
+- git branch <name>: 创建分支
+- git checkout <name>:切换分支
+- git branch -d <name>:删除分支
+- git status -s : 查看文件状态
+- git log : 查看日志
+- git reset : 撤销暂存区的修改
+
