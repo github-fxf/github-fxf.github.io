@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Java之Collections.emptyList()、emptySet()、emptyMap()
+title:      Java开发笔记之Collections.emptyList()、emptySet()、emptyMap()
 subtitle:   
 date:       2021-03-09
 author:     fxf
@@ -11,7 +11,7 @@ tags:
 ---
 
 
-# Java之Collections.emptyList()、emptySet()、emptyMap()
+# Java开发笔记之Collections.emptyList()、emptySet()、emptyMap()
 
 #  使用场景及好处：
 
