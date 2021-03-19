@@ -1,13 +1,13 @@
 ---
 layout:     post
-title:      Java开发笔记之spring-boot自定义注解，解析自定义注解的属性值，配置文件的参数值
+title:      spring-boot自定义注解，解析自定义注解的属性值，配置文件的参数值
 subtitle:   
 date:       2021-03-14
 author:     fxf
 header-img: img/post-web.jpg
 catalog: true
 tags:
-    - java开发笔记
+    - spring-boot
 ---
 
 # spring-boot自定义注解，解析自定义注解的属性值，配置文件的参数值
