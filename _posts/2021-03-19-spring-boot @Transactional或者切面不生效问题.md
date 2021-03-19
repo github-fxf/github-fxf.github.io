@@ -2,7 +2,7 @@
 layout:     post
 title:      spring-boot @Transactional或者切面不生效问题记录
 subtitle:   
-date:       2021-03-14
+date:       2021-03-19
 author:     fxf
 header-img: img/post-web.jpg
 catalog: true
