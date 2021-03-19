@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      spring-boot自定义注解，解析自定义注解的属性值，配置文件的参数值
+title:      spring-boot @Transactional或者切面不生效问题记录
 subtitle:   
 date:       2021-03-14
 author:     fxf
@@ -10,126 +10,83 @@ tags:
     - spring-boot
 ---
 
-# spring-boot自定义注解，解析自定义注解的属性值，配置文件的参数值
+Spring的声明式事务和切面都是通过aop进行动态代理实现的
+所以直接通过this来调用方法的话,将不会触发事务和切面
 
-## 1.依赖
-
-```
-`<dependency>`
-   `<groupId>org.springframework.boot</groupId>`
-   `<artifactId>spring-boot-starter-aop</artifactId>`
-`</dependency>
-```
-
-## 2.配置文件
+**示例**
 
 ```
-test.key=testValue
-```
+package com.oneconnect.sg.service.impl;
 
-## 3.注解
-
-```
-package com.qin.annotation;
-
-import java.lang.annotation.*;
-
-@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface AuthDemo {
-    String value() default "";
-}
-```
-
-## 4.切面AOP
-
-```
-package com.qin.aspectj;
-import com.qin.annotation.AuthDemo;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
-import org.springframework.context.EnvironmentAware;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
-
-@Aspect
-@Component
-public class AuthDemoAspect implements EnvironmentAware {
-    Environment environment;
+@Service
+public class UserManagerServiceImpl implements UserManagerService {
 
     @Override
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
+    @Transactional(rollbackFor = Exception.class)
+    public Long addUser(User user, Boolean reviewFlag) {
+        //do something
     }
 
-    @Pointcut("@annotation(com.qin.annotation.AuthDemo)")
-    public void myPointCut() {
-
+ 	@Override
+    public void updateUser(User user) {
+    	// do something
+    	addUser(user,true);
     }
-
-    @Before(value = "myPointCut()")
-    public void check(){
-        System.out.println("check");
-    }
-
-    @After(value = "myPointCut()")
-    public void bye(){
-        System.out.println("bye");
-    }
-
-    /**
-     *配置文件配置
-     *test.key=testValue
-     */
-    @Around("myPointCut() && @annotation(authDemo)")
-    public void around(ProceedingJoinPoint joinPoint, AuthDemo authDemo){
-        //解析配置文件参数代码:${test.key}
-        String s = environment.resolvePlaceholders(authDemo.value());
-        System.out.println("未解析的值:"+authDemo.value());//${test.key}
-        System.out.println("解析后的值:"+ s);//testValue
-        //目标方法返回对象
-        Object proceed = null;
-        try {
-             //执行目标方法:可修改目标方法的参数
-             proceed = joinPoint.proceed(new Object[]{s});
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
-        return ;
-    }
-
 }
 ```
 
-## 5.测试
+**切面类**
 
 ```
-package com.qin.controller.MyResolveController;
+@Aspect
+@Component
+public class ValidatorAOP {
+    @Pointcut("execution(* com.oneconnect.sg.service..*(..)) and 			   	 @annotation(org.springframework.stereotype.Service)")
+    public void controllerMethodPointcut() {
+    
+    }
 
-import com.qin.annotation.AuthDemo;
-import org.springframework.web.bind.annotation.*;
-
-/**
- *@author WZB
- *@date 2020/03/18
- *@desciption 注解属性获取配置文件参数测试
- *
- */
-@RestController
-@RequestMapping(value = "/api/")
-public class MyResolveController{
-
-    @PostMapping(value = "/test")
-    @AuthDemo(value = "${test.key}")
-    public CommonResponse test(String param) {
-        CommonResponse response=new CommonResponse();
-        System.out.println(param);
-        return response;
+    @Around("controllerMethodPointcut()")
+    public Object Interceptor(ProceedingJoinPoint pjp) throws Throwable {
+       //do something
     }
 
 }
 ```
 
 
-原文链接：https://blog.csdn.net/qq_42513284/article/details/109034771
+**结果**
+开发中可能会遇到如上所示的业务代码
+
+我们在updateUser方法中直接调用了addUser方法,此时addUser的切面以及事务都不会生效(单指addUser上的事务及切面,假设updateUser没有事务,实际开发中可能会存在这种情况)
+
+原因是调用addUser是通过this调用的,而不是通过Spring管理的Bean来调用,也就是调用的不是代理之后的方法
+
+**解决方法**
+通过注入的Bean来调用方法,可根据具体业务看是否需要采用这种方法
+
+这样事务和切面都会生效
+
+```
+public class UserManagerServiceImpl implements UserManagerService {
+
+    @Autowired
+    @Lazy
+    private UserManagerService userManagerService;
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Long addUser(User user, Boolean reviewFlag) {
+        //do something
+    }
+
+ 	@Override
+    public void updateUser(User user) {
+    	// do something
+    	userManagerService.addUser(user,true);
+    }
+}
+```
+
+
+原文链接：https://blog.csdn.net/zhuchencn/article/details/104818356
