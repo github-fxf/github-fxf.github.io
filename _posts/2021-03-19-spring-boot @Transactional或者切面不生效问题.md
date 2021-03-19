@@ -54,18 +54,13 @@ public class ValidatorAOP {
 }
 ```
 
-
 **结果**
-开发中可能会遇到如上所示的业务代码
 
-我们在updateUser方法中直接调用了addUser方法,此时addUser的切面以及事务都不会生效(单指addUser上的事务及切面,假设updateUser没有事务,实际开发中可能会存在这种情况)
-
-原因是调用addUser是通过this调用的,而不是通过Spring管理的Bean来调用,也就是调用的不是代理之后的方法
+我们在updateUser方法中直接调用了addUser方法,此时addUser的切面以及事务都不会生效(单指addUser上的事务及切面,假设updateUser没有事务,实际开发中可能会存在这种情况)，原因是调用addUser是通过this调用的,而不是通过Spring管理的Bean来调用,也就是调用的不是代理之后的方法
 
 **解决方法**
-通过注入的Bean来调用方法,可根据具体业务看是否需要采用这种方法
 
-这样事务和切面都会生效
+通过注入的Bean来调用方法,可根据具体业务看是否需要采用这种方法，这样事务和切面都会生效
 
 ```
 public class UserManagerServiceImpl implements UserManagerService {
