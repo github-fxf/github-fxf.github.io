@@ -16,7 +16,7 @@ tags:
 
 1. 第一种是通过自定义注解的形式把Bean注入：
 
-	- 自定义注解
+- 自定义注解
 
 		```
 		@Retention(RetentionPolicy.RUNTIME)
@@ -26,11 +26,11 @@ tags:
 		@Deprecated
 		public @interface EnableIbasePointAspect {
 		}
-		```
+	```
 
-		
+	​	
 
-	- 扫描注入bean
+- 扫描注入bean
 
 		```
 		@Configuration
@@ -38,11 +38,11 @@ tags:
 		@Deprecated
 		public class IBasePointAspectConfig {
 		}
-		```
+	```
 
-		
+	​	
 
-	- SpringBoot启动类上添加自定义注解
+- SpringBoot启动类上添加自定义注解
 
 		```
 		@SpringBootApplication
@@ -52,7 +52,7 @@ tags:
 		        SpringApplication.run(DemoApplication.class, args);
 		    }
 		}
-		```
+	```
 
 这种写法的好处在于别人可以灵活的选择注入或者不注入你的Bean;缺点就是想注入得在启动类上加注解，哈哈哈...
 
@@ -77,6 +77,8 @@ public class ActuatorConfig {
 这样，别人在SpringBoot中添加你的Maven依赖后启动时就可以把切面代理之类的注入到他项目中去了。
 
 至于底层机制自行查资料吧.~~~(*^_^*)
-————————————————
+
+
+
 版权声明：本文为CSDN博主「北京--小乌龟」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
 原文链接：https://blog.csdn.net/u012246511/article/details/107468783
