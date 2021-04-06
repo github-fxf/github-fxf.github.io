@@ -36,6 +36,8 @@ public class MyAopAdviseDefine {
         logger.info("---Before method {} invoke, param: {}---", joinPoint.getSignature().toShortString(), joinPoint.getArgs());
     }
 }
+
+
 @Service
 public class SomeService {
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -50,6 +52,8 @@ public class SomeService {
         logger.info("---SomeService: test invoked---");
     }
 }
+
+
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @SpringBootAppliMyion
 public class MyAopDemo {
