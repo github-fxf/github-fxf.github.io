@@ -13,11 +13,9 @@ tags:
 Spring的声明式事务和切面都是通过aop进行动态代理实现的
 所以直接通过this来调用方法的话,将不会触发事务和切面
 
-转 https://segmentfault.com/a/1190000008379179
-
 起因
 考虑如下一个例子:
-
+```
 @Target(value = {ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -67,6 +65,7 @@ public class MyAopDemo {
         someService.hello("abc");
     }
 }
+```
 在这个例子中, 我们定义了一个注解 MyMonitor, 这个是一个方法注解, 我们的期望是当有此注解的方法被调用时, 需要执行指定的切面逻辑, 即执行 MyAopAdviseDefine.logMethodInvokeParam 方法.
 
 在 SomeService 类中, 方法 test() 被 MyMonitor 所注解, 因此调用 test() 方法时, 应该会触发 logMethodInvokeParam 方法的调用. 不过有一点我们需要注意到, 我们在 MyAopDemo 测试例子中, 并没有直接调用 SomeService.test() 方法, 而是调用了 SomeService.hello() 方法, 在 hello 方法中, 调用了同一个类内部的 SomeService.test() 方法. 按理说, test() 方法被调用时, 会触发 AOP 逻辑, 但是在这个例子中, 我们并没有如愿地看到 MyAopAdviseDefine.logMethodInvokeParam 方法的调用, 这是为什么呢?
@@ -81,6 +80,7 @@ public class MyAopDemo {
 弄懂了上面的分析, 那么解决这个问题就十分简单了. 既然 test() 方法调用没有触发 AOP 逻辑的原因是因为我们以目标对象的身份(target object) 来调用的, 那么解决的关键自然就是以代理对象(proxied object)的身份来调用 test() 方法.
 因此针对于上面的例子, 我们进行如下修改即可:
 
+```
 @Service
 public class SomeService {
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -98,6 +98,7 @@ public class SomeService {
         logger.info("---SomeService: test invoked---");
     }
 }
+```
 上面展示的代码中, 我们使用了一种很 subtle 的方式, 即将 SomeService bean 注入到 self 字段中(这里再次强调的是, SomeService bean 实际上是一个代理对象, 它和 this 引用所指向的对象并不是同一个对象), 因此我们在 hello 方法调用中, 使用 self.test() 的方式来调用 test() 方法, 这样就会触发 AOP 逻辑了.
 
 Spring AOP 导致的 @Transactional 不生效的问题
@@ -107,7 +108,7 @@ Spring AOP 导致的 @Transactional 不生效的问题
 这里也记录下来以作参考.
 
 那个哥们遇到的问题如下:
-
+```
 public class UserService {
  
     @Transactional
@@ -127,13 +128,14 @@ public class UserService {
         }
     } 
 }
+```
 他在 addUser 方法上使用 @Transactional 来使用事务功能, 然后他在外部服务中, 通过调用 addUsers 方法批量添加用户. 经过了上面的分析后, 现在我们就可知道其实这里添加注解是不会启动事务功能的, 因为 AOP 逻辑整个都没生效嘛.
 
 解决这个问题的方法有两个, 一个是使用 AspectJ 模式的事务实现:
 
 <tx:annotation-driven mode="aspectj"/>
 另一个就是和我们刚才在上面的例子中的解决方式一样:
-
+```
 public class UserService {
     private UserService self;
  
@@ -158,3 +160,4 @@ public class UserService {
         }
     } 
 }
+```
