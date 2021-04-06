@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      spring-boot @Transactional或者切面不生效问题记录
+title:      spring-boot 在同一个类中调用另一个方法没有触发 Spring AOP 的问题
 subtitle:   
 date:       2021-03-19
 author:     fxf
@@ -36,8 +36,8 @@ public class MyAopAdviseDefine {
         logger.info("---Before method {} invoke, param: {}---", joinPoint.getSignature().toShortString(), joinPoint.getArgs());
     }
 }
-
-
+```
+```
 @Service
 public class SomeService {
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -52,8 +52,8 @@ public class SomeService {
         logger.info("---SomeService: test invoked---");
     }
 }
-
-
+```
+```
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @SpringBootAppliMyion
 public class MyAopDemo {
